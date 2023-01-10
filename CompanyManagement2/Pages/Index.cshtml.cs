@@ -18,14 +18,14 @@ public class IndexModel : PageModel
 
     public void OnGet()
     {
-        
+        Console.WriteLine("Inside OnGet() function");
         _logger.LogDebug("OnGet() function");
 
 
     }
-    public IActionResult OnPostEnvironment()
+    public IActionResult OnPostRetrieve()
     {
-        _logger.LogDebug("OnPostEnvironment() function");
+        Console.WriteLine("OnPostEnvironment() function");
         string connStr = "server=localhost;user=root;database=company_table;port=3306;password=root";
 
         MySqlConnection conn = new MySqlConnection(connStr);
@@ -37,7 +37,7 @@ public class IndexModel : PageModel
 
             //SQL Query to execute
             //selecting only first 10 rows for demo
-            string sql = "select * from company_table.companies;";
+            string sql = "SELECT * FROM company_table.companies;";
             MySqlCommand cmd = new MySqlCommand(sql, conn);
             MySqlDataReader rdr = cmd.ExecuteReader();
 
@@ -57,7 +57,102 @@ public class IndexModel : PageModel
         return new JsonResult(companies);
     }
 
+    public IActionResult OnPostAdd([FromBody] Company c)
+    {
+        Console.WriteLine("OnPostAdd() function");
+        string connStr = "server=localhost;user=root;database=company_table;port=3306;password=root";
+        Console.WriteLine("Company: " + c);
+        MySqlConnection conn = new MySqlConnection(connStr);
+        try
+        {
+            Console.WriteLine("Connecting to MySQL...");
+            conn.Open();
+            
+            string sql = "INSERT INTO company_table.companies (ID, CompanyName, Address, State, City, Phone, Fax, Website, Zipcode)" +
+                           " VALUES (" + c.Id.ToString() + ", '" + c.CompanyName + "', '" + c.Address + "','" + c.State + "','" + c.City + "','" +
+                           c.Phone + "','" + c.Fax + "','" + c.Website + "','"+c.Zipcode+"');";
+            MySqlConnection MyConn2 = new MySqlConnection(connStr);
+            MySqlCommand MyCommand2 = new MySqlCommand(sql, MyConn2);
+            MySqlDataReader MyReader2;
+            MyConn2.Open();
+            MyReader2 = MyCommand2.ExecuteReader();
+            while (MyReader2.Read())
+            {
+            }
+            
+        }
+        catch (Exception err)
+        {
+            Console.WriteLine(err.ToString());
+        }
 
-   
+        conn.Close();
+        return this.OnPostRetrieve();
+
+    }
+
+    public IActionResult OnPostUpdate([FromBody] Company c)
+    {
+        Console.WriteLine("OnPostUpdate() function");
+        string connStr = "server=localhost;user=root;database=company_table;port=3306;password=root";
+        Console.WriteLine("Company: " + c);
+        MySqlConnection conn = new MySqlConnection(connStr);
+        try
+        {
+            Console.WriteLine("Connecting to MySQL...");
+            conn.Open();
+            string sql = "UPDATE company_table.companies" +
+                         " SET CompanyName='"+c.CompanyName+"',Address='"+c.Address+
+                         "',State='"+c.State+"',City='"+c.City+"',Phone='"+c.Phone+"',Fax='"+c.Fax+"',Website='"+c.Website+"',Zipcode='"+c.Zipcode+"' WHERE ID="+c.Id+";";
+            Console.WriteLine("Query: " + sql);
+            MySqlConnection MyConn2 = new MySqlConnection(connStr);
+            MySqlCommand MyCommand2 = new MySqlCommand(sql, MyConn2);
+            MySqlDataReader MyReader2;
+            MyConn2.Open();
+            MyReader2 = MyCommand2.ExecuteReader();
+            while (MyReader2.Read())
+            {
+            }
+            
+        }
+        catch (Exception err)
+        {
+            Console.WriteLine(err.ToString());
+        }
+
+        conn.Close();
+        return this.OnPostRetrieve();
+    }
+
+    public IActionResult OnPostDelete([FromBody] Company c)
+    {
+        Console.WriteLine("OnPostUpdate() function");
+        string connStr = "server=localhost;user=root;database=company_table;port=3306;password=root";
+        Console.WriteLine("Company: " + c);
+        MySqlConnection conn = new MySqlConnection(connStr);
+        try
+        {
+            Console.WriteLine("Connecting to MySQL...");
+            conn.Open();
+            string sql = "DELETE FROM  company_table.companies WHERE ID="+c.Id+";";
+            Console.WriteLine("Query: " + sql);
+            MySqlConnection MyConn2 = new MySqlConnection(connStr);
+            MySqlCommand MyCommand2 = new MySqlCommand(sql, MyConn2);
+            MySqlDataReader MyReader2;
+            MyConn2.Open();
+            MyReader2 = MyCommand2.ExecuteReader();
+            while (MyReader2.Read())
+            {
+            }
+            
+        }
+        catch (Exception err)
+        {
+            Console.WriteLine(err.ToString());
+        }
+
+        conn.Close();
+        return this.OnPostRetrieve();
+    }
 }
 
