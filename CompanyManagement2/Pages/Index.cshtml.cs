@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using CompanyManagement2.Models;
+using CompanyManagement2.SVM;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySqlConnector;
@@ -152,6 +153,12 @@ public class IndexModel : PageModel
         }
 
         conn.Close();
+        return this.OnPostRetrieve();
+    }
+
+    public IActionResult OnPostSVM()
+    {
+        new SVM_Program();
         return this.OnPostRetrieve();
     }
 }
