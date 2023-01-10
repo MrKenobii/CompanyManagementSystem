@@ -1,0 +1,88 @@
+﻿@page
+@model IndexModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@using CompanyManagement2.Models;
+@{
+    ViewData["Title"] = "Home page";
+}
+<div class="text-center dx-viewport">
+    <h1 class="display-4">Welcome</h1>
+    <h2>The time on the server is @DateTime.Now</h2>
+    <p><button class="btn btn-primary" id="load" onclick="fetch()">Load</button></p>
+    <div class="demo-container">
+        <div id="gridContainer"></div>
+    </div>
+    <script>
+    console.log("Script works");    
+    function fetch() {
+        console.log("Inside fetch()");
+        $.ajax({
+             type: "POST",
+             url: "/?handler=Environment",
+             headers:
+             {
+                 "RequestVerificationToken": "@Xsrf.GetAndStoreTokens(HttpContext).RequestToken"
+             },
+             data: {},
+             contentType: "application/json; charset=utf-8",
+             dataType: "json",
+             success: function (msg) {
+                 // alert(msg[0].id);
+             }
+         }).done(function (data) {
+             console.log("Inside done()");
+             console.log(data);
+            $("#gridContainer").dxDataGrid({
+                    dataSource: data,
+                    paging: {
+                        pageSize: 10
+                    },
+                    pager: {
+                        showPageSizeSelector: true,
+                        allowedPageSizes: [5, 10, 20],
+                        showInfo: true
+                    },
+                    showBorders: true,
+                    columns: [{
+                                  dataField: 'id',
+                                  dataType: 'number',
+                                }, {
+                                  dataField: 'companyName',
+                                  dataType: 'date',
+                                }, {
+                                  dataField: 'address',
+                                  dataType: 'string',
+                                }, {
+                                  dataField: 'city',
+                                  dataType: 'string',
+                                }, {
+                                  dataField: 'state',
+                                  dataType: 'string',
+                                }, {
+                                  dataField: 'zipcode',
+                                  dataType: 'string',
+                                },{
+                                  dataField: 'phone',
+                                  dataType: 'string',
+                                },{
+                                  dataField: 'fax',
+                                  dataType: 'string',
+                                },{
+                                 dataField: 'website',
+                                 dataType: 'string',
+                                }]
+                            });
+
+         }).fail(function (error) {
+                 console.log("Error: " + error);
+           });    
+     }
+          
+     
+               
+    </script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+</div>
+
+
