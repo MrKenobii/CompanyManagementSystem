@@ -158,8 +158,16 @@ public class IndexModel : PageModel
 
     public IActionResult OnPostSVM()
     {
-        new SVM_Program();
-        return this.OnPostRetrieve();
+        double[][] train_X = new double[8][] { 
+            new double[] { 0.29, 0.36, 0.50 }, new double[] { 0.50, 0.29, 0.14 },
+            new double[] { 0.00, 0.43, 0.86 }, new double[] { 0.07, 0.29, 0.57 },
+            new double[] { 0.64, 0.50, 0.36 }, new double[] { 0.98, 0.50, 0.00 },
+            new double[] { 0.43, 0.64, 0.86 }, new double[] { 0.57, 0.64, 0.71 } };
+        int[] train_y = new int[8] { -1, -1, -1, -1, 1, 1, 1, 1 };
+        Console.WriteLine("Inside OnPostSVM() method");
+        var svm = new SVM_Program(train_X, train_y);
+        return new JsonResult(svm.GetPredLabel());
+        
     }
 }
 
